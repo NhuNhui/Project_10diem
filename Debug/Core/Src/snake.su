@@ -1,0 +1,13 @@
+snake.c:15:10:random_eat	16	static
+snake.c:27:6:snake_init	24	static
+snake.c:30:6:display	24	static
+snake.c:36:6:game_over	32	static
+snake.c:50:6:right	24	static
+snake.c:57:6:left	24	static
+snake.c:64:6:up	24	static
+snake.c:71:6:down	24	static
+snake.c:78:6:eat_food_success	24	static
+snake.c:84:6:food	24	static
+snake.c:131:6:move	8	static
+snake.c:174:6:wall	16	static
+snake.c:178:6:start_game	24	static
