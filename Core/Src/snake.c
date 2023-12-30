@@ -13,6 +13,8 @@ uint8_t currentIndex = 0;
 path allPath[30];
 int16_t x_max = 234, y_max = 315;
 uint8_t flag = 0;
+uint8_t flag1 = 0;
+uint8_t flag2 = 0;
 int16_t x1 = 180, y1 = 110, x2 = 190, y2 = 120;
 enum state firstState = goDown;
 enum state prevState = goRight;
@@ -66,6 +68,36 @@ void game_over(){
 	lcd_Fill(x1, y1, x2, y2, WHITE);
 	lcd_Fill(x_food, y_food, x_food+5, y_food+5, WHITE);
 	display();
+}
+void moveWall() {
+	if (flag1 == 0) {
+		lcd_Fill(obstacles[7].x2-2, obstacles[7].y1, obstacles[7].x2, obstacles[7].y2, WHITE);
+		obstacles[7].x1-=2;
+		obstacles[7].x2-=2;
+		lcd_Fill(obstacles[7].x1, obstacles[7].y1, obstacles[7].x1+2, obstacles[7].y2, MAGENTA);
+		if (obstacles[7].x1 <= 10) flag1 = 1;
+	} else {
+		lcd_Fill(obstacles[7].x1, obstacles[7].y1, obstacles[7].x1+2, obstacles[7].y2, WHITE);
+		obstacles[7].x1+=2;
+		obstacles[7].x2+=2;
+		lcd_Fill(obstacles[7].x2-2, obstacles[7].y1, obstacles[7].x2, obstacles[7].y2, MAGENTA);
+		if (obstacles[7].x2 >= 230) flag1 = 0;
+	}
+
+	if (flag2 == 0) {
+		lcd_Fill(obstacles[8].x1, obstacles[8].y2-2, obstacles[8].x2, obstacles[8].y2, WHITE);
+		obstacles[8].y1-=2;
+		obstacles[8].y2-=2;
+		lcd_Fill(obstacles[8].x1, obstacles[8].y1, obstacles[8].x2, obstacles[8].y1+2, MAGENTA);
+		if (obstacles[8].y1 <= 10) flag2 = 1;
+	} else {
+		lcd_Fill(obstacles[8].x1, obstacles[8].y1, obstacles[8].x2, obstacles[8].y1+2, WHITE);
+		obstacles[8].y1+=2;
+		obstacles[8].y2+=2;
+		lcd_Fill(obstacles[8].x1, obstacles[8].y2-2, obstacles[8].x2, obstacles[8].y2, MAGENTA);
+		if (obstacles[8].y2 >= 310) flag2 = 0;
+	}
+
 }
 void checkCollision () {
 	for (int8_t i = 0; i < 9; ++i) {
@@ -337,6 +369,7 @@ void move() {
 //	count++;
 
 	food();
+	moveWall();
 	checkCollision();
 	//snake move with button
 	if (button_count[6] == 1) {
