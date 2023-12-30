@@ -13,7 +13,7 @@ uint8_t currentIndex = 0;
 path allPath[30];
 int16_t x_max = 234, y_max = 315;
 uint8_t flag = 0;
-int16_t x1 = 120, y1 = 150, x2 = 130, y2 = 160;
+int16_t x1 = 180, y1 = 110, x2 = 190, y2 = 120;
 enum state firstState = goDown;
 enum state prevState = goRight;
 uint16_t random_eat(uint16_t minN, uint16_t maxN) {
@@ -23,11 +23,30 @@ uint16_t x_food;
 uint16_t y_food;
 uint16_t init_len = 10;
 uint16_t snakeTailLen = 10;
-uint16_t speed = 5;
+uint16_t speed = 2;
 uint16_t count = 0;
 uint16_t CREATE_FOOD = 1;
+obstacle obstacles[9] = {
+        {55, 75, 65, 150},    // Wall 1
+        {55, 90, 90, 100},    // Wall 2
+        {70, 200, 125, 210},  // Wall 3
+        {150, 55, 200, 65},    // Wall 4
+        {150, 55, 160, 95},   // Wall 5
+        {190, 200, 200, 260},    // Wall 6
+        {130, 250, 200, 260},
+		{90, 150, 140, 160},
+		{115, 150, 125, 200}
+    };
+void creatWall(int32_t X1, int32_t Y1, int32_t X2, int32_t Y2) {
+    // Replace this with the appropriate function in your graphics library
+    lcd_Fill(X1, Y1, X2, Y2, MAGENTA);
+}
 void snake_init() {
 	lcd_Fill(x1, y1, x2, y2, BLUE);
+	 //lcd_Fill(55, 75, 56, 150, RED);
+	for (int8_t i = 0; i < 9; ++i) {
+	       creatWall(obstacles[i].x1, obstacles[i].y1, obstacles[i].x2, obstacles[i].y2);
+	    }
 }
 void display() {
 	lcd_ShowStr(50,30,"Game Over!!!",WHITE,BLACK,24,0);
@@ -38,8 +57,8 @@ void display() {
 void game_over(){
 //	lcd_ShowStr(50,30,"Game Over!!!",WHITE,BLACK,24,0);
 //	lcd_ShowStr(50,30,"Game Over!!!",WHITE,YELLOW,24,0);
-	lcd_ShowStr(25,120,"May choi ngu vl!",WHITE,RED,24,0);
-	lcd_ShowStr(10,200,"Diem cua ban la: ",BLUE,WHITE,24,0);
+	lcd_ShowStr(25,120,"NGU!",WHITE,RED,24,0);
+	lcd_ShowStr(10,200,"DIEM SO CUA BAN LA: ",BLUE,WHITE,24,0);
 	if(count < 10)
 		lcd_ShowIntNum(210,200,count,1,BLUE,WHITE,24);
 	else
@@ -48,7 +67,27 @@ void game_over(){
 	lcd_Fill(x_food, y_food, x_food+5, y_food+5, WHITE);
 	display();
 }
-
+void checkCollision () {
+	for (int8_t i = 0; i < 9; ++i) {
+		if (x1 >= obstacles[i].x1 && x1 <= obstacles[i].x2) {
+			if (y1 >= obstacles[i].y1 && y1 <= obstacles[i].y2) {
+				game_over();
+				return;
+			} else if (y2 >= obstacles[i].y1 && y2 <= obstacles[i].y2) {
+				game_over();
+				return;
+			}
+		} else if (x2 >= obstacles[i].x1 && x2 <= obstacles[i].x2) {
+			if (y1 >= obstacles[i].y1 && y1 <= obstacles[i].y2) {
+				game_over();
+				return;
+			} else if (y2 >= obstacles[i].y1 && y2 <= obstacles[i].y2) {
+				game_over();
+				return;
+			}
+		}
+	}
+}
 void delete_path() {
     // Assuming lcd_Fill is a function to clear the specified area on the LCD with white color
     	if (allPath[0].isTail == 0) {
@@ -285,7 +324,6 @@ void food() {
 }
 
 
-
 void move() {
 	if(x1 <= 5 || x1 >= x_max || x2 <= 5 || x2 >= x_max
 	|| y1 <= 0 || y1 >= y_max || y2 <= 0 || y2 >= y_max) { //đụng tường
@@ -299,6 +337,7 @@ void move() {
 //	count++;
 
 	food();
+	checkCollision();
 	//snake move with button
 	if (button_count[6] == 1) {
 		if (firstState != goDown) {
