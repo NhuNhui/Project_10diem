@@ -12,10 +12,12 @@
 #include "led_7seg.h"
 
 extern uint16_t flag_timer2;
+extern uint16_t flag_Sensor;
 
 void timer_init();
 void setTimer2(uint16_t duration);
 void timer_EnableDelayUs();
 void delay_us (uint16_t us);
+void setTimerSendSensor(uint16_t duration);
 
 #endif /* INC_SOFTWARE_TIMER_H_ */

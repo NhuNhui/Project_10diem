@@ -89,6 +89,30 @@ uint8_t uart_EspCheck(){
 	if(check_esp == 1) return 1;
 	return 0;
 }
+//snprintf(str2, sizeof(str2), "%d", val);
+
+void uartSendSensor() {
+	char *str = "#";
+	char str1[50] = "SENSOR#";
+//	char str3[60] = "Temperature: ";
+	char *str2[50];
+	snprintf(str2, sizeof(str2), "%d", (uint16_t)sensor_GetTemperature());
+	strcat(str1, str2);
+	strcat(str1,str);
+	//get ánh sáng
+	char *str3[50];
+	snprintf(str3, sizeof(str3), "%d", (uint16_t)sensor_GetLight());
+	strcat(str1, str3);
+	strcat(str1,str);
+	// get Power
+	char *str4[50];
+
+	snprintf(str4, sizeof(str4), "%d", (uint16_t)sensor_GetPotentiometer());
+	strcat(str1, str4);
+	strcat(str1,str);
+	// gửi data
+	uart_EspSendBytes(str1, strlen(str1));
+}
 
 
 

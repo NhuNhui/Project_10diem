@@ -12,6 +12,9 @@
 #include "utils.h"
 #include "gpio.h"
 #include "light_control.h"
+#include "sensor.h"
+#include <stdlib.h>
+#include <string.h>
 
 extern uint8_t flag_uart2;
 extern uint8_t receive_buffer1;
@@ -30,6 +33,8 @@ void uart_Rs232SendNumPercent(uint32_t num);
 
 void uart_init_esp();
 void uart_EspSendBytes(uint8_t* bytes, uint16_t size);
+void uartSendSensor();
+
 
 #endif /* INC_UART_H_ */
 

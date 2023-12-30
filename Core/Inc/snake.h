@@ -13,7 +13,7 @@
 
 void snake_init();
 void move();
-void wall();
+void wall(uint16_t difficult);
 void start_game();
 
 #endif /* INC_SNAKE_H_ */

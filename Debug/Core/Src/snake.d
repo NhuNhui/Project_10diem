@@ -37,7 +37,7 @@ Core/Src/snake.o: ../Core/Src/snake.c ../Core/Inc/snake.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/gpio.h ../Core/Inc/button.h ../Core/Inc/spi.h \
- ../Core/Inc/led_7seg.h
+ ../Core/Inc/led_7seg.h ../Core/Inc/vector.h
 
 ../Core/Inc/snake.h:
 
@@ -126,3 +126,5 @@ Core/Src/snake.o: ../Core/Src/snake.c ../Core/Inc/snake.h \
 ../Core/Inc/spi.h:
 
 ../Core/Inc/led_7seg.h:
+
+../Core/Inc/vector.h:

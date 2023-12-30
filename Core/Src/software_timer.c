@@ -14,6 +14,10 @@ uint16_t flag_timer2 = 0;
 uint16_t timer2_counter = 0;
 uint16_t timer2_MUL = 0;
 
+uint16_t flag_Sensor = 0;
+uint16_t timer_Sensor = 0;
+uint16_t timer_Sensor_MUL = 0;
+
 void timer_init(){
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_Base_Start(&htim1);
@@ -29,6 +33,13 @@ void setTimer2(uint16_t duration){
 	flag_timer2 = 0;
 }
 
+void setTimerSendSensor(uint16_t duration)
+{
+	timer_Sensor_MUL = duration/TIMER_CYCLE_2;
+	timer_Sensor = timer_Sensor_MUL;
+	flag_Sensor = 0;
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance == TIM2){
 		if(timer2_counter > 0){
@@ -36,6 +47,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			if(timer2_counter == 0) {
 				flag_timer2 = 1;
 				timer2_counter = timer2_MUL;
+			}
+		}
+		if (timer_Sensor > 0)
+		{
+			timer_Sensor--;
+			if (timer_Sensor <= 0)
+			{
+				flag_Sensor = 1;
+				timer_Sensor = timer_Sensor_MUL;
 			}
 		}
 		led7_Scan();

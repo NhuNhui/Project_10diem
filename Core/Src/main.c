@@ -42,6 +42,7 @@
 #include "uart.h"
 #include "light_control.h"
 #include "snake.h"
+#include "UI.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,6 +75,11 @@ void test_LedY1();
 void test_7seg();
 void test_button();
 void test_lcd();
+void in_snake_game();
+void display_UI();
+void display_UI_Snake_Game();
+uint16_t status = 0;
+uint16_t difficult = 10;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -122,7 +128,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   system_init();
   lcd_Clear(WHITE);
-  snake_init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,9 +139,40 @@ int main(void)
   	  while(!flag_timer2);
 	  flag_timer2 = 0;
 	  button_Scan();
+
+	  if(flag_Sensor == 1) {
+		  sensor_Read();
+		  uartSendSensor();
+		  setTimerSendSensor(15000);
+	  }
+
 //	  test_button();
 //	  test_7seg();
-	  test_lcd();
+	  switch (status) {
+	  case 0:
+		  display_UI();
+		  if(button_count[0] == 1) {
+			  status = 2;
+			  lcd_Clear(BLACK);
+			  button_count[0] = 0;
+		  }
+		  break;
+	  case 1:
+
+		  wall(difficult);
+		  move();
+
+		  if(button_count[12] == 1) {
+			  status = 2;
+			  lcd_Clear(BLACK);
+			  button_count[12] = 0;
+		  }
+		  break;
+	  case 2:
+		  display_UI_Snake_Game();
+		  break;
+	  }
+
       /* USER CODE END WHILE */
 
       /* USER CODE BEGIN 3 */
@@ -197,7 +234,10 @@ void system_init(){
 	  led7_init();
 	  button_init();
 	  lcd_init();
+	  sensor_init();
+	  uart_init_esp();
 	  setTimer2(50);
+	  setTimerSendSensor(2000);
 }
 
 uint8_t count_led_debug = 0;
@@ -244,9 +284,42 @@ void test_button(){
 	}
 }
 void test_lcd(){
-//	snake_init();
-	wall();
+	snake_init();
+
 	move();
+}
+
+void display_UI() {
+	lcd_ShowPicture(80,20, 90, 90, gImage_logo);
+	lcd_ShowStr(50, 115, "LOGIC DESIGN", RED, WHITE, 24, 1);
+	lcd_ShowStr(42, 150, "GVHD: Vu Trong Thien", BLACK, WHITE, 16, 1);
+	lcd_ShowStr(42, 168, "--------------------", BLACK, WHITE, 16, 1);
+	lcd_ShowStr(48, 190, "Nhom 2", BLACK, WHITE, 16, 1);
+	lcd_ShowStr(48, 210, "Huynh Gia Qui", BLACK, WHITE, 16, 1);
+	lcd_ShowStr(48, 230, "Dao Duy Thanh", BLACK, WHITE, 16, 1);
+	lcd_ShowStr(48, 250, "Pham Dinh Quoc Thai", BLACK, WHITE, 16, 1);
+}
+void choose_level() {
+	if(button_count[3] == 1)
+		difficult++;
+	if(button_count[7] == 1)
+		difficult--;
+	lcd_ShowIntNum(160,250,difficult,1,WHITE,BLACK,16);
+}
+void display_UI_Snake_Game() {
+	lcd_ShowStr(40,50,"SNAKE ",WHITE,BLACK,32,0);
+	lcd_ShowStr(120,100,"GAME",WHITE,BLACK,32,0);
+	lcd_ShowStr(50,200,"Chon do kho!",WHITE,BLACK,16,0);
+	choose_level();
+	if(button_count[4] == 1) {
+		status = 1;
+		lcd_Clear(WHITE);
+		lcd_Fill(0, 0, 240, 100, BLACK);
+		snake_init();
+	}
+
+//	lcd_ShowStr(0,220,"",WHITE,BLACK,16,0);
+
 }
 
 /* USER CODE END 4 */
