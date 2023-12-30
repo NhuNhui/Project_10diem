@@ -14,14 +14,13 @@ enum state { goUp, goDown, goLeft, goRight };
 typedef struct {
 	enum state currentState;
 	uint8_t isTail;
-    uint32_t length;
-    uint32_t x1;
-    uint32_t x2;
-    uint32_t y1;
-    uint32_t y2;
+    int32_t length;
+    int32_t x1;
+    int32_t x2;
+    int32_t y1;
+    int32_t y2;
 
 } path;
-
 
 
 

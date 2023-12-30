@@ -11,8 +11,9 @@
 #include "vector.h"
 uint8_t currentIndex = 0;
 path allPath[30];
-uint16_t x_max = 234, y_max = 315;
-uint16_t x1 = 120, y1 = 150, x2 = 130, y2 = 160;
+int16_t x_max = 234, y_max = 315;
+uint8_t flag = 0;
+int16_t x1 = 120, y1 = 150, x2 = 130, y2 = 160;
 enum state firstState = goDown;
 enum state prevState = goRight;
 uint16_t random_eat(uint16_t minN, uint16_t maxN) {
@@ -20,27 +21,19 @@ uint16_t random_eat(uint16_t minN, uint16_t maxN) {
 }
 uint16_t x_food;
 uint16_t y_food;
-
+uint16_t init_len = 10;
 uint16_t snakeTailLen = 10;
-uint16_t speed = 2;
+uint16_t speed = 5;
 uint16_t count = 0;
-//uint16_t pre_count = 0;
 uint16_t CREATE_FOOD = 1;
 void snake_init() {
 	lcd_Fill(x1, y1, x2, y2, BLUE);
-	path test = {goUp,0,0,0,0,0};
-	for (uint8_t i = 0; i < 30; i++) {
-		allPath[i] = test;
-	}
 }
 void display() {
 	lcd_ShowStr(50,30,"Game Over!!!",WHITE,BLACK,24,0);
 	HAL_Delay(1000);
 	lcd_ShowStr(50,30,"Game Over!!!",BLUE,YELLOW,24,0);
 	HAL_Delay(1000);
-}
-void fill_white() {
-
 }
 void game_over(){
 //	lcd_ShowStr(50,30,"Game Over!!!",WHITE,BLACK,24,0);
@@ -59,63 +52,68 @@ void game_over(){
 void delete_path() {
     // Assuming lcd_Fill is a function to clear the specified area on the LCD with white color
     	if (allPath[0].isTail == 0) {
+    		//if (allPath[0].currentState == goRight) lcd_Fill(x1,0, x2, y2, RED);
     		if (allPath[0].length >= snakeTailLen) {
     			if (allPath[0].currentState == goUp) {
-					lcd_Fill(allPath[0].x1, allPath[0].y2-2, allPath[0].x2, allPath[0].y2, WHITE);
-					allPath[0].y2 -= 2;
+					lcd_Fill(allPath[0].x1, allPath[0].y2-speed, allPath[0].x2, allPath[0].y2, WHITE);
+					allPath[0].y2 -= speed;
 				} else if (allPath[0].currentState == goDown) {
-					lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x2, allPath[0].y1 + 2, WHITE);
-					allPath[0].y1 += 2;
+					lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x2, allPath[0].y1 + speed, WHITE);
+					allPath[0].y1 += speed;
 				} else if (allPath[0].currentState == goLeft) {
-					lcd_Fill(allPath[0].x2-2, allPath[0].y1, allPath[0].x2, allPath[0].y2, WHITE);
-					allPath[0].x2 -= 2;
+					lcd_Fill(allPath[0].x2-speed, allPath[0].y1, allPath[0].x2, allPath[0].y2, WHITE);
+					allPath[0].x2 -= speed;
 				} else if (allPath[0].currentState == goRight) {
-					lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x1+2, allPath[0].y2, WHITE);
-					allPath[0].x1 += 2;
+					lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x1+speed, allPath[0].y2, WHITE);
+					allPath[0].x1 += speed;
 				}
 
     		}
     	} else if (allPath[0].isTail == 1) {
-    		allPath[0].length-=2;
+    		allPath[0].length -= speed;
     		if (allPath[0].currentState == goUp) {
-				lcd_Fill(allPath[0].x1, allPath[0].y2-2, allPath[0].x2, allPath[0].y2, WHITE);
-				allPath[0].y2 -= 2;
+				lcd_Fill(allPath[0].x1, allPath[0].y2-speed, allPath[0].x2, allPath[0].y2, WHITE);
+				allPath[0].y2 -= speed;
 			} else if (allPath[0].currentState == goDown) {
-				lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x2, allPath[0].y1 + 2, WHITE);
-				allPath[0].y1 += 2;
+				lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x2, allPath[0].y1 + speed, WHITE);
+				allPath[0].y1 += speed;
 			} else if (allPath[0].currentState == goLeft) {
-				lcd_Fill(allPath[0].x2-2, allPath[0].y1, allPath[0].x2, allPath[0].y2, WHITE);
-				allPath[0].x2 -= 2;
+				lcd_Fill(allPath[0].x2-speed, allPath[0].y1, allPath[0].x2, allPath[0].y2, WHITE);
+				allPath[0].x2 -= speed;
 			} else if (allPath[0].currentState == goRight) {
-				lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x1+2, allPath[0].y2, WHITE);
-				allPath[0].x1 += 2;
+				lcd_Fill(allPath[0].x1, allPath[0].y1, allPath[0].x1+speed, allPath[0].y2, WHITE);
+				allPath[0].x1 += speed;
 			}
-
-    		if (allPath[0].length == 0) {
-
-				for (uint8_t i = 0; i < currentIndex - 1; i++) {
-					allPath[i] = allPath[i + 1];
+    		if (flag == 0) {
+				if (allPath[0].length == 0 || allPath[0].length < 0) {
+						flag = 1;
+						delete_path();
+						flag = 0;
+					for (uint8_t i = 0; i < currentIndex - 1; i++) {
+						allPath[i] = allPath[i + 1];
+					}
+					currentIndex--;
 				}
-				currentIndex--;
-			}
+    		}
+
+
+
     	}
 
 }
 void right() {
 
 	if (prevState == goRight) {
-
-				if (allPath[currentIndex-1].length < snakeTailLen) {
-
-					allPath[currentIndex-1].length +=2;
+				if (allPath[currentIndex-1].length <= snakeTailLen) {
+					allPath[currentIndex-1].length +=speed;
 				}
-
 				allPath[currentIndex-1].x2 = x2;
 			} else {
 				if (currentIndex == 0) allPath[0].isTail = 0;
 				else allPath[currentIndex-1].isTail = 1;
 				allPath[currentIndex].isTail = 0;
-				allPath[currentIndex].length = 10;
+				if (snakeTailLen == init_len) allPath[currentIndex].length = snakeTailLen;
+				else allPath[currentIndex].length = 0;
 				allPath[currentIndex].currentState = goRight;
 				allPath[currentIndex].x1 = x1;
 				allPath[currentIndex].x2 = x2;
@@ -125,27 +123,29 @@ void right() {
 				currentIndex++;
 			}
 			prevState = goRight;
-			if (snakeTailLen - allPath[currentIndex-1].length == 10) allPath[currentIndex-1].length+=2;
-			x1 += 2;
-			x2 += 2;
+			//if (snakeTailLen - allPath[currentIndex-1].length == init_len) allPath[currentIndex-1].length+=speed;
+			x1 += speed;
+			x2 += speed;
+
 
 			lcd_Fill(x1, y1, x2, y2, BLUE);
 			delete_path();
-
 }
 void left() {
 	if (prevState == goLeft) {
-		if (allPath[currentIndex-1].length < snakeTailLen) {
+		if (allPath[currentIndex-1].length <= snakeTailLen) {
 
-							allPath[currentIndex-1].length +=2;
+							allPath[currentIndex-1].length +=speed;
 						}
 
 			allPath[currentIndex-1].x1 = x1;
+
 		} else {
 			if (currentIndex == 0) allPath[0].isTail = 0;
 			else allPath[currentIndex-1].isTail = 1;
 			allPath[currentIndex].isTail = 0;
-			allPath[currentIndex].length = 10;
+			if (snakeTailLen == init_len) allPath[currentIndex].length = snakeTailLen;
+			else allPath[currentIndex].length = 0;
 			allPath[currentIndex].currentState = goLeft;
 			allPath[currentIndex].x1 = x1;
 			allPath[currentIndex].x2 = x2;
@@ -154,12 +154,12 @@ void left() {
 			currentIndex++;
 		}
 		prevState = goLeft;
-		if (snakeTailLen - allPath[currentIndex-1].length == 10) allPath[currentIndex-1].length+=2;
-		x1 -= 2;
-		x2 -= 2;
+		//if (snakeTailLen - allPath[currentIndex-1].length == init_len) allPath[currentIndex-1].length+=speed;
+		x1 -= speed;
+		x2 -= speed;
+
 
 		lcd_Fill(x1, y1, x2, y2, BLUE);
-
 		delete_path();
 
 }
@@ -168,38 +168,43 @@ void left() {
 void up() {
 
 	if (prevState == goUp) {
-		if (snakeTailLen - allPath[currentIndex-1].length == 10) allPath[currentIndex-1].length+=2;
-		if (allPath[currentIndex-1].length < snakeTailLen) {
+		if (allPath[currentIndex-1].length <= snakeTailLen) {
 
-					allPath[currentIndex-1].length += 2;
+					allPath[currentIndex-1].length += speed;
 				}
-		y1 -= speed;
-		y2 -= speed;
+
 		allPath[currentIndex-1].y1 -= y1 ;
 
-		lcd_Fill(x1, y1, x2, y2, BLUE);
-		delete_path();
+
 	} else {
 		if (currentIndex == 0) allPath[0].isTail = 0;
 		else allPath[currentIndex-1].isTail = 1;
 		allPath[currentIndex].isTail = 0;
-		allPath[currentIndex].length = 10;
+		if (snakeTailLen == init_len) allPath[currentIndex].length = snakeTailLen;
+		else allPath[currentIndex].length = 0;
 		allPath[currentIndex].currentState = goUp;
 		allPath[currentIndex].x1 = x1;
 		allPath[currentIndex].x2 = x2;
 		allPath[currentIndex].y1 = y1;
 		allPath[currentIndex].y2 = y2;
 		currentIndex++;
-		prevState = goUp;
-
 	}
+	prevState = goUp;
+	//if (snakeTailLen - allPath[currentIndex-1].length == init_len) allPath[currentIndex-1].length+=speed;
+
+	y1 -= speed;
+	y2 -= speed;
+
+
+	lcd_Fill(x1, y1, x2, y2, BLUE);
+	delete_path();
 }
 
 
 void down() {
 
 	if (prevState == goDown) {
-		if (allPath[currentIndex-1].length < snakeTailLen) {
+		if (allPath[currentIndex-1].length <= snakeTailLen) {
 
 			allPath[currentIndex-1].length += speed;
 		}
@@ -209,7 +214,8 @@ void down() {
 		if (currentIndex == 0) allPath[0].isTail = 0;
 		else allPath[currentIndex-1].isTail = 1;
 		allPath[currentIndex].isTail = 0;
-		allPath[currentIndex].length = 10;
+		if (snakeTailLen == init_len) allPath[currentIndex].length = snakeTailLen;
+		else allPath[currentIndex].length = 0;
 		allPath[currentIndex].currentState = goDown;
 		allPath[currentIndex].x1 = x1;
 		allPath[currentIndex].x2 = x2;
@@ -218,9 +224,10 @@ void down() {
 		currentIndex++;
 	}
 	prevState = goDown;
-	if (snakeTailLen - allPath[currentIndex-1].length == 10) allPath[currentIndex-1].length+=2;
+	//if (snakeTailLen - allPath[currentIndex-1].length == init_len) allPath[currentIndex-1].length+=speed;
 		y1 += speed;
 		y2 += speed;
+
 		lcd_Fill(x1, y1, x2, y2, BLUE);
 		delete_path();
 }
