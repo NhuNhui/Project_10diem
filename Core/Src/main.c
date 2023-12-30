@@ -159,7 +159,7 @@ int main(void)
 		  break;
 	  case 1:
 
-		  wall(difficult);
+		  wall(difficult%3);
 		  move();
 
 		  if(button_count[12] == 1) {
@@ -237,7 +237,7 @@ void system_init(){
 	  sensor_init();
 	  uart_init_esp();
 	  setTimer2(50);
-	  setTimerSendSensor(2000);
+	  setTimerSendSensor(15000);
 }
 
 uint8_t count_led_debug = 0;
@@ -304,7 +304,21 @@ void choose_level() {
 		difficult++;
 	if(button_count[7] == 1)
 		difficult--;
-	lcd_ShowIntNum(160,250,difficult,1,WHITE,BLACK,16);
+
+	switch(difficult%3) {
+	case 0:
+		lcd_Fill(100, 230, 200, 260, BLACK);
+		lcd_ShowStr(100,230,"EASY",WHITE,BLACK,16,0);
+		break;
+	case 1:
+		lcd_Fill(100, 230, 200, 260, BLACK);
+		lcd_ShowStr(100,230,"NORMAL",WHITE,BLACK,16,0);
+		break;
+	case 2:
+		lcd_Fill(100, 230, 200, 260, BLACK);
+		lcd_ShowStr(100,230,"HARD",WHITE,BLACK,16,0);
+		break;
+	}
 }
 void display_UI_Snake_Game() {
 	lcd_ShowStr(40,50,"SNAKE ",WHITE,BLACK,32,0);
@@ -316,6 +330,9 @@ void display_UI_Snake_Game() {
 		lcd_Clear(WHITE);
 		lcd_Fill(0, 0, 240, 100, BLACK);
 		snake_init();
+		if(difficult%3 >= 1) {
+			createWall();
+		}
 	}
 
 //	lcd_ShowStr(0,220,"",WHITE,BLACK,16,0);

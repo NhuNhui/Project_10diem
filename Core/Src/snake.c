@@ -10,6 +10,7 @@
 #include "led_7seg.h"
 #include "vector.h"
 
+uint16_t level = 0;
 uint8_t currentIndex = 0;
 path allPath[30];
 int16_t x_max = 239, y_max = 319, y_min = 100;
@@ -46,21 +47,31 @@ obstacle obstacles[9] = {
 		{90, 150, 140, 160},
 		{115, 150, 125, 200}
     };
-void creatWall(int32_t X1, int32_t Y1, int32_t X2, int32_t Y2) {
+void createWall_color(int32_t X1, int32_t Y1, int32_t X2, int32_t Y2) {
     // Replace this with the appropriate function in your graphics library
     lcd_Fill(X1, Y1, X2, Y2, MAGENTA);
+}
+void createWall() {
+	for (int8_t i = 0; i < 9; ++i) {
+		createWall_color(obstacles[i].x1, obstacles[i].y1, obstacles[i].x2, obstacles[i].y2);
+	}
 }
 void snake_init() {
 	lcd_Fill(x1, y1, x2, y2, BLUE);
 	 //lcd_Fill(55, 75, 56, 150, RED);
-	for (int8_t i = 0; i < 9; ++i) {
-	       creatWall(obstacles[i].x1, obstacles[i].y1, obstacles[i].x2, obstacles[i].y2);
-	    }
 }
 
 void reset_game() {
+	count = 0;
 	lcd_Clear(WHITE);
+	x1 = 160, y1 = 190, x2 = 170, y2 = 200;
+	CREATE_FOOD = 1;
+
 	lcd_Fill(0, 0, 240, 100, BLACK);
+	snake_init();
+	if(level >= 1) {
+		createWall();
+	}
 }
 void game_over(){
 
@@ -81,13 +92,7 @@ void game_over(){
 	}
 
 	if(button_count[10] == 1) {
-		count = 0;
-		lcd_Clear(WHITE);
-		x1 = 160, y1 = 190, x2 = 170, y2 = 200;
-		CREATE_FOOD = 1;
-
-		lcd_Fill(0, 0, 240, 100, BLACK);
-		snake_init();
+		reset_game();
 //		wall();
 //		move();
 	}
@@ -169,6 +174,8 @@ void moveWall() {
 }
 
 uint8_t checkCollision() {
+	if(level == 0)
+		return 0;
 	for (int8_t i = 0; i < 9; ++i) {
 		if (x1 >= obstacles[i].x1 && x1 <= obstacles[i].x2) {
 			if (y1 >= obstacles[i].y1 && y1 <= obstacles[i].y2) {
@@ -439,7 +446,10 @@ void move() {
 
 	food();
 
-	moveWall(); // mode 3
+	if(level == 2) {
+		moveWall();
+	}
+		 // mode 3
 	 //mode 2 va 3
 	//snake move with button
 	if (button_count[6] == 1) {
@@ -471,6 +481,9 @@ void move() {
 }
 
 void wall(uint16_t difficult) {
+	level = difficult;
+
+
 	lcd_ShowStr(10,10,"SNAKE GAME!!!",WHITE,BLACK,16,0);
 
 
