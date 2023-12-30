@@ -429,7 +429,7 @@ void move() {
 
 	food();
 	snakeSelfBite (x1,y1,x2,y2, 0);
-//	moveWall(); // mode 3
+	moveWall(); // mode 3
 	 //mode 2 va 3
 	//snake move with button
 	if (button_count[6] == 1) {
