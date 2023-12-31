@@ -452,8 +452,8 @@ void food() {
 
 
 void move() {
-	if(x1 <= 2 || x1 >= x_max-2 || x2 <= 2 || x2 >= x_max -2
-	|| y1 <= 100 || y1 >= y_max - 2 || y2 <= 100 || y2 >= y_max - 2) { //đụng tường
+	if(x1 <= 2 || x1 >= x_max || x2 <= 2 || x2 >= x_max
+	|| y1 <= y_min || y1 >= y_max || y2 <= y_min || y2 >= y_max - 2) { //đụng tường
 			game_over();
 			return;
 	}
