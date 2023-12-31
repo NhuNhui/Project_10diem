@@ -92,7 +92,12 @@ void reset_game() {
 
 	}
 }
+uint8_t flag_clear_screen = 1;
 void game_over(){
+	if(flag_clear_screen == 1) {
+		lcd_Fill(0, 101,240 ,319, WHITE);
+		flag_clear_screen = 0;
+	}
 
 	lcd_ShowStr(50,175,"Diem cua ban la: ",RED,WHITE,16,0);
 	if(count < 10)
@@ -109,13 +114,15 @@ void game_over(){
 	if(count > max_count) {
 		max_count = count;
 	}
-	reset_game();
+//	reset_game();
 	if(button_count[10] == 1) {
 		reset_game();
+		flag_clear_screen = 1;
 //		wall();
 //		move();
-	} else if (button_count[11] == 1) {
-
+	} else if (button_count[12] == 1) {
+		reset_game();
+		flag_clear_screen = 1;
 	}
 
 }
@@ -523,12 +530,12 @@ void move() {
 	}
 }
 
-void wall(uint16_t difficult) {
+void wall(uint8_t id, uint16_t difficult) {
 	level = difficult;
 
 
-	lcd_ShowStr(10,10,"SNAKE GAME!!!",WHITE,BLACK,16,0);
-
+	lcd_ShowStr(10,10,"ID nguoi choi: ",WHITE,BLACK,16,0);
+	lcd_ShowIntNum(125,10,id,1,WHITE,BLACK,16);
 
 //	hiện thị score hiện tại
 	lcd_ShowStr(10,30,"Diem so cua ban la: ",WHITE,BLACK,16,0);
@@ -548,6 +555,17 @@ void wall(uint16_t difficult) {
 
 	lcd_ShowStr(10,70,"Do kho: ",WHITE,BLACK,16,0);
 	lcd_ShowIntNum(70,70,difficult,1,WHITE,BLACK,16);
+	switch (difficult) {
+	case 0:
+		lcd_ShowStr(70,70,"Easy",WHITE,BLACK,16,0);
+		break;
+	case 1:
+		lcd_ShowStr(70,70,"Normal",WHITE,BLACK,16,0);
+		break;
+	case 2:
+		lcd_ShowStr(70,70,"Hard",WHITE,BLACK,16,0);
+		break;
+	}
 
 	lcd_DrawRectangle(0, 100, x_max, y_max, RED); //TẠO TƯỜNG
 }

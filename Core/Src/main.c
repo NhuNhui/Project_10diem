@@ -80,6 +80,7 @@ void display_UI();
 void display_UI_Snake_Game();
 uint16_t status = 0;
 uint16_t difficult = 10;
+uint8_t id = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -159,7 +160,7 @@ int main(void)
 		  break;
 	  case 1:
 
-		  wall(difficult%3);
+		  wall(id,difficult%3);
 		  move();
 
 		  if(button_count[12] == 1) {
@@ -285,7 +286,6 @@ void test_button(){
 }
 void test_lcd(){
 	snake_init();
-
 	move();
 }
 
@@ -298,6 +298,24 @@ void display_UI() {
 	lcd_ShowStr(48, 210, "Huynh Gia Qui", BLACK, WHITE, 16, 1);
 	lcd_ShowStr(48, 230, "Dao Duy Thanh", BLACK, WHITE, 16, 1);
 	lcd_ShowStr(48, 250, "Pham Dinh Quoc Thai", BLACK, WHITE, 16, 1);
+}
+
+uint8_t flag_choose = 0;
+void choose_id() {
+	if(button_count[3] == 1) {
+		id++;
+		if(id > 9) {
+			id = 9;
+		}
+	}
+	if(button_count[7] == 1) {
+		id--;
+		if(id < 0)
+			id = 0;
+	}
+	if(button_count[10] == 1) {
+		flag_choose = 1;
+	}
 }
 void choose_level() {
 	if(button_count[3] == 1)
@@ -320,13 +338,19 @@ void choose_level() {
 		break;
 	}
 }
+
 void display_UI_Snake_Game() {
 	lcd_ShowStr(40,50,"SNAKE ",WHITE,BLACK,32,0);
 	lcd_ShowStr(120,100,"GAME",WHITE,BLACK,32,0);
+	lcd_ShowStr(50,170,"Nhap ID: ",WHITE,BLACK,16,0);
+	lcd_ShowIntNum(120, 170, id, 1, WHITE, BLACK, 16);
 	lcd_ShowStr(50,200,"Chon do kho!",WHITE,BLACK,16,0);
-
-	choose_level();
+	if(flag_choose == 0)
+		choose_id();
+	if(flag_choose == 1)
+		choose_level();
 	if(button_count[4] == 1) {
+		flag_choose = 0; // về chế độ chọn ID cho lần sau
 		status = 1;
 		lcd_Clear(WHITE);
 		lcd_Fill(0, 0, 240, 100, BLACK);
