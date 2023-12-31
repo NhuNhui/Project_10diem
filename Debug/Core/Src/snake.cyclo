@@ -16,4 +16,4 @@
 ../Core/Src/snake.c:402:6:eat_food_success	1
 ../Core/Src/snake.c:409:6:food	30
 ../Core/Src/snake.c:454:6:move	21
-../Core/Src/snake.c:509:6:wall	3
+../Core/Src/snake.c:512:6:wall	3

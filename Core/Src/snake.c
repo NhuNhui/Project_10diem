@@ -453,8 +453,7 @@ void food() {
 
 void move() {
 	if(x1 <= 2 || x1 >= x_max-2 || x2 <= 2 || x2 >= x_max -2
-	|| y1 <= 100 || y1 >= y_max - 2 || y2 <= 100 || y2 >= y_max - 2
-	|| snakeSelfBite(x1,y1,x2,y2,0) == 1) { //đụng tường
+	|| y1 <= 100 || y1 >= y_max - 2 || y2 <= 100 || y2 >= y_max - 2) { //đụng tường
 			game_over();
 			return;
 	}
@@ -465,6 +464,10 @@ void move() {
 //	count++;
 
 	food();
+	if (snakeSelfBite(x1,y1,x2,y2,0)) {
+		game_over();
+		return;
+	}
 	if (level >= 1) {
 		if (checkCollision()) {
 			game_over();
