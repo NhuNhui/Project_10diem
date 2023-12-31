@@ -13,7 +13,7 @@
 uint16_t level = 0;
 uint8_t currentIndex = 0;
 path allPath[30];
-int16_t x_max = 239, y_max = 319, y_min = 100;
+const int16_t x_max = 239, y_max = 319, y_min = 100;
 uint8_t flag = 0;
 uint8_t flag1 = 0;
 uint8_t flag2 = 0;
@@ -58,19 +58,38 @@ void createWall() {
 }
 void snake_init() {
 	lcd_Fill(x1, y1, x2, y2, BLUE);
-	 //lcd_Fill(55, 75, 56, 150, RED);
 }
 
 void reset_game() {
 	count = 0;
+	max_count = 0;
 	lcd_Clear(WHITE);
 	x1 = 160, y1 = 190, x2 = 170, y2 = 200;
 	CREATE_FOOD = 1;
 
 	lcd_Fill(0, 0, 240, 100, BLACK);
+	currentIndex = 0;
+	for (int i = 0; i < 30; i++) {
+	        allPath[i].currentState = goDown;
+	        allPath[i].isTail = 0;
+	        allPath[i].length = 0;
+	        allPath[i].x1 = 0;
+	        allPath[i].x2 = 0;
+	        allPath[i].y1 = 0;
+	        allPath[i].y2 = 0;
+	    }
+	init_len = 10;
+	snakeTailLen = 10;
+	flag = 0;
+	flag1 = 0;
+	flag2 = 0;
+	speed = 2;
+	firstState = goDown;
+	prevState = goRight;
 	snake_init();
 	if(level >= 1) {
 		createWall();
+
 	}
 }
 void game_over(){
@@ -121,8 +140,8 @@ uint8_t checkBite (int16_t X1 , int16_t Y1, int16_t X2, int16_t Y2,int8_t count)
 	}
 	return 0;
 }
-uint8_t snakeSelfBite (int16_t X1 , int16_t Y1, int16_t X2, int16_t Y2,int8_t flag){
-	if (flag == 1) {
+uint8_t snakeSelfBite (int16_t X1 , int16_t Y1, int16_t X2, int16_t Y2,int8_t flag3){
+	if (flag3 == 1) {
 		if(checkBite(X1, Y1, X2, Y2, 0) == 1)
 			return 1;
 		return 0;
@@ -383,6 +402,7 @@ void down() {
 void eat_food_success() {
 	CREATE_FOOD = 1; //QUAY LAI HÀM TẠO FRUIT
 	count++; //tăng số điểm
+	snakeTailLen += 10;
 	lcd_Fill(x_food, y_food, x_food+5, y_food+5, WHITE);
 }
 
@@ -432,9 +452,9 @@ void food() {
 
 
 void move() {
-	if(x1 == 0 || x1 == x_max || x2 == 0 || x2 == x_max
-	|| y1 == 100 || y1 == y_max || y2 == 100 || y2 == y_max
-	|| checkCollision() == 1 || snakeSelfBite(x1,y1,x2,y2,0) == 1) { //đụng tường
+	if(x1 <= 2 || x1 >= x_max-2 || x2 <= 2 || x2 >= x_max -2
+	|| y1 <= 100 || y1 >= y_max - 2 || y2 <= 100 || y2 >= y_max - 2
+	|| snakeSelfBite(x1,y1,x2,y2,0) == 1) { //đụng tường
 			game_over();
 			return;
 	}
@@ -445,9 +465,15 @@ void move() {
 //	count++;
 
 	food();
-
+	if (level >= 1) {
+		if (checkCollision()) {
+			game_over();
+			return;
+		}
+	}
 	if(level == 2) {
 		moveWall();
+
 	}
 		 // mode 3
 	 //mode 2 va 3

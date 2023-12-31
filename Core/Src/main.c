@@ -329,6 +329,7 @@ void display_UI_Snake_Game() {
 		status = 1;
 		lcd_Clear(WHITE);
 		lcd_Fill(0, 0, 240, 100, BLACK);
+		reset_game();
 		snake_init();
 		if(difficult%3 >= 1) {
 			createWall();
