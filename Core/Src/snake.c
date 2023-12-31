@@ -69,7 +69,7 @@ void reset_game() {
 
 	lcd_Fill(0, 0, 240, 100, BLACK);
 	currentIndex = 0;
-	for (int i = 0; i < 30; i++) {
+	for (int8_t i = 0; i < 30; i++) {
 	        allPath[i].currentState = goDown;
 	        allPath[i].isTail = 0;
 	        allPath[i].length = 0;
@@ -109,11 +109,13 @@ void game_over(){
 	if(count > max_count) {
 		max_count = count;
 	}
-
+	reset_game();
 	if(button_count[10] == 1) {
 		reset_game();
 //		wall();
 //		move();
+	} else if (button_count[11] == 1) {
+		reset_game();
 	}
 
 }
@@ -124,7 +126,7 @@ uint8_t checkBite (int16_t X1 , int16_t Y1, int16_t X2, int16_t Y2,int8_t count)
 			if (Y1 >= allPath[i].y1 && Y1 <= allPath[i].y2) {
 
 				return 1;
-			} else if (y2 >= allPath[i].y1 && y2 <= allPath[i].y2) {
+			} else if (Y2 >= allPath[i].y1 && Y2 <= allPath[i].y2) {
 
 				return 1;
 			}
@@ -482,16 +484,28 @@ void move() {
 	 //mode 2 va 3
 	//snake move with button
 	if (button_count[6] == 1) {
-		firstState = goUp;
+		if (firstState != goDown) {
+			prevState = firstState;
+			firstState = goUp;
+		}
 	}
 	else if (button_count[14] == 1) {
-		firstState = goDown;
+		if (firstState != goUp) {
+			prevState = firstState;
+			firstState = goDown;
+		}
 	}
 	else if (button_count[11] == 1) {
-		firstState = goRight;
+		if (firstState != goLeft) {
+			prevState = firstState;
+			firstState = goRight;
+		}
 	}
 	else if (button_count[9] == 1) {
-		firstState = goLeft;
+		if (firstState != goRight) {
+			prevState = firstState;
+			firstState = goLeft;
+		}
 	}
 	switch (firstState) {
 		case goUp:

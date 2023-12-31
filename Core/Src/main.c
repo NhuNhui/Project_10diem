@@ -324,12 +324,12 @@ void display_UI_Snake_Game() {
 	lcd_ShowStr(40,50,"SNAKE ",WHITE,BLACK,32,0);
 	lcd_ShowStr(120,100,"GAME",WHITE,BLACK,32,0);
 	lcd_ShowStr(50,200,"Chon do kho!",WHITE,BLACK,16,0);
+
 	choose_level();
 	if(button_count[4] == 1) {
 		status = 1;
 		lcd_Clear(WHITE);
 		lcd_Fill(0, 0, 240, 100, BLACK);
-		reset_game();
 		snake_init();
 		if(difficult%3 >= 1) {
 			createWall();
