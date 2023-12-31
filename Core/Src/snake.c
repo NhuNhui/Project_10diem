@@ -115,7 +115,7 @@ void game_over(){
 //		wall();
 //		move();
 	} else if (button_count[11] == 1) {
-		reset_game();
+
 	}
 
 }
