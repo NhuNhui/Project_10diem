@@ -69,21 +69,24 @@ void game_over(){
 	lcd_Fill(x_food, y_food, x_food+5, y_food+5, WHITE);
 	display();
 }
-void checkBite (int16_t X1 , int16_t Y1, int16_t X2, int16_t Y2,int8_t count) {
-	for (int8_t i = count; i < currentIndex; i++) {
+void checkBite (int16_t X1 , int16_t Y1, int16_t X2, int16_t Y2,int8_t tail) {
+	for (int8_t i = tail; i < currentIndex; i++) {
 		if (X1 >= allPath[i].x1 && X1 <= allPath[i].x2) {
 			if (Y1 >= allPath[i].y1 && Y1 <= allPath[i].y2) {
 				game_over();
 				return;
-			} else if (y2 >= allPath[i].y1 && y2 <= allPath[i].y2) {
+			} else if (Y2 >= allPath[i].y1 && Y2 <= allPath[i].y2) {
+				lcd_Fill(0, Y1, X2, Y2, RED);
 				game_over();
 				return;
 			}
 		} else if (X2 >= allPath[i].x1 && X2 <= allPath[i].x2) {
 			if (Y1 >= allPath[i].y1 && Y1 <= allPath[i].y2) {
+				//lcd_Fill(0, Y1, X2, Y2, RED);
 				game_over();
 				return;
 			} else if (Y2 >= allPath[i].y1 && Y2 <= allPath[i].y2) {
+				//lcd_Fill(0, Y1, X2, Y2, RED);
 				game_over();
 				return;
 			}
@@ -104,7 +107,7 @@ void moveWall() {
 		obstacles[7].x2-=2;
 		lcd_Fill(obstacles[7].x1, obstacles[7].y1, obstacles[7].x1+2, obstacles[7].y2, MAGENTA);
 
-		snakeSelfBite(obstacles[7].x1,obstacles[7].y1,obstacles[7].x1+10,obstacles[7].y2, 1);
+		snakeSelfBite(obstacles[7].x1,obstacles[7].y1,obstacles[7].x1+2,obstacles[7].y2, 1);
 		if (obstacles[7].x1 <= 10) flag1 = 1;
 	} else {
 		lcd_Fill(obstacles[7].x1, obstacles[7].y1, obstacles[7].x1+2, obstacles[7].y2, WHITE);
@@ -403,9 +406,6 @@ void move() {
 //	count++;
 
 	food();
-	snakeSelfBite (x1,y1,x2,y2, 0);
-	moveWall(); // mode 3
-	checkCollision(); //mode 2 va 3
 	//snake move with button
 	if (button_count[6] == 1) {
 		if (firstState != goDown) {
@@ -449,7 +449,9 @@ void move() {
 			left();
 			break;
 	}
-
+	snakeSelfBite (x1,y1,x2,y2, 0);
+	moveWall(); // mode 3
+	checkCollision(); //m
 }
 
 void wall() {
