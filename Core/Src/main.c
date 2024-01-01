@@ -309,9 +309,13 @@ void choose_id() {
 		}
 	}
 	if(button_count[7] == 1) {
-		id--;
-		if(id < 0)
+		if(id == 0) {
 			id = 0;
+			return;
+		}
+
+		id--;
+
 	}
 	if(button_count[10] == 1) {
 		flag_choose = 1;
@@ -355,6 +359,7 @@ void display_UI_Snake_Game() {
 		lcd_Clear(WHITE);
 		lcd_Fill(0, 0, 240, 100, BLACK);
 		snake_init();
+		uartSendPlay();
 		if(difficult%3 >= 1) {
 			createWall();
 		}

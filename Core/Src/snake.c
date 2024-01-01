@@ -9,7 +9,11 @@
 #include <stdlib.h>
 #include "led_7seg.h"
 #include "vector.h"
+#include "uart.h"
 
+#include <string.h>
+
+uint8_t id_game = 0;
 uint16_t level = 0;
 uint8_t currentIndex = 0;
 path allPath[30];
@@ -62,7 +66,7 @@ void snake_init() {
 
 void reset_game() {
 	count = 0;
-	max_count = 0;
+
 	lcd_Clear(WHITE);
 	x1 = 160, y1 = 190, x2 = 170, y2 = 200;
 	CREATE_FOOD = 1;
@@ -94,7 +98,11 @@ void reset_game() {
 }
 uint8_t flag_clear_screen = 1;
 void game_over(){
+	if(count > max_count) {
+		max_count = count;
+	}
 	if(flag_clear_screen == 1) {
+		uartSendPlay();
 		lcd_Fill(0, 101,240 ,319, WHITE);
 		flag_clear_screen = 0;
 	}
@@ -111,18 +119,17 @@ void game_over(){
 	lcd_ShowStr(10,230,"Nhan phim 9 de choi lai!",BLACK,WHITE,16,0);
 	lcd_ShowStr(10,250,"Nhan phim E de thoat game!",BLACK,WHITE,16,0);
 	lcd_ShowStr(50,130,"Game Over!!!",BLUE,YELLOW,24,0);
-	if(count > max_count) {
-		max_count = count;
-	}
+
 //	reset_game();
 	if(button_count[10] == 1) {
+		uartSendPlay();
 		reset_game();
 		flag_clear_screen = 1;
-//		wall();
-//		move();
+
 	} else if (button_count[12] == 1) {
 		reset_game();
 		flag_clear_screen = 1;
+		max_count = 0;
 	}
 
 }
@@ -409,8 +416,10 @@ void down() {
 }
 
 void eat_food_success() {
+
 	CREATE_FOOD = 1; //QUAY LAI HÀM TẠO FRUIT
 	count++; //tăng số điểm
+	uartSendPlay();
 	snakeTailLen += 10;
 	lcd_Fill(x_food, y_food, x_food+5, y_food+5, WHITE);
 }
@@ -530,9 +539,51 @@ void move() {
 	}
 }
 
+
+void uartSendPlay()
+{
+
+	char str1[100] = "GAME_PLAY#ID: ";
+	char *str2[50];
+	snprintf(str2, sizeof(str2), "%d", id_game);
+	strcat(str1, str2);
+
+	char str3[20] = "\nScore: ";
+	char *str4[50];
+	snprintf(str4, sizeof(str4), "%d", count);
+	strcat(str3, str4);
+
+	char str5[20] = "\nMax Score: ";
+	char *str6[50];
+	snprintf(str6, sizeof(str6), "%d", max_count);
+	strcat(str5, str6);
+
+	char str7[20] = "\nDo kho : ";
+	char *str8;
+	switch (level) {
+		case 0:
+			str8 = "Easy";
+			break;
+		case 1:
+			str8 = "Normal";
+			break;
+		case 2:
+			str8 = "Hard";
+			break;
+	}
+	strcat(str7, str8);
+
+	strcat(str1, str3);
+	strcat(str1, str5);
+	strcat(str1, str7);
+	strcat(str1, "#");
+	uart_EspSendBytes(str1, strlen(str1));
+}
+
+
 void wall(uint8_t id, uint16_t difficult) {
 	level = difficult;
-
+	id_game = id;
 
 	lcd_ShowStr(10,10,"ID nguoi choi: ",WHITE,BLACK,16,0);
 	lcd_ShowIntNum(125,10,id,1,WHITE,BLACK,16);

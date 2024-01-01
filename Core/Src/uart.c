@@ -106,13 +106,11 @@ void uartSendSensor() {
 	strcat(str1,str);
 	// get Power
 	char *str4[50];
-
 	snprintf(str4, sizeof(str4), "%d", (uint16_t)sensor_GetPotentiometer());
 	strcat(str1, str4);
+
 	strcat(str1,str);
 	// gửi data
 	uart_EspSendBytes(str1, strlen(str1));
 }
-
-
 

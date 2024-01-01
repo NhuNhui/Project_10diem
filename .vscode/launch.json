@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/QUI/STM32CubeIDE/STM32F407/BKIT_ARM4_Bai8_ESP_Wifi/Project_Final/Core/Src",
-      "program": "c:/Users/QUI/STM32CubeIDE/STM32F407/BKIT_ARM4_Bai8_ESP_Wifi/Project_Final/Core/Src/build/Debug/outDebug",
+      "cwd": "c:/Users/QUI/STM32CubeIDE/TKLL_Final/Project_10diem/Core/Src",
+      "program": "c:/Users/QUI/STM32CubeIDE/TKLL_Final/Project_10diem/Core/Src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
