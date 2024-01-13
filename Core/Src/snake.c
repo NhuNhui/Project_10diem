@@ -430,6 +430,8 @@ void food() {
 			x_food = random_eat(0,x_max-5);
 			y_food = random_eat(100,y_max-5);
 			if(checkBite(X1, Y1, X2, Y2, count))
+			// to do
+			// check dính tường chỗ này
 		}
 
 
