@@ -426,8 +426,13 @@ void eat_food_success() {
 
 void food() {
 	if(CREATE_FOOD == 1) { // Tạo mồi nhậu
-		x_food = random_eat(0,x_max-5);
-		y_food = random_eat(100,y_max-5);
+		while(1) {
+			x_food = random_eat(0,x_max-5);
+			y_food = random_eat(100,y_max-5);
+			if(checkBite(X1, Y1, X2, Y2, count))
+		}
+
+
 		lcd_Fill(x_food, y_food, x_food+5, y_food+5, RED);
 		CREATE_FOOD = 0; // tránh tạo mồi liên tục
 
